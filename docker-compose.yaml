@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  app:
+    build: .
+    container_name: gestao-durabilidade-app
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/home/django/app
+    ports:
+      - "8001:8000"
+    depends_on:
+      - db
+
+  db:
+    image: postgres
+    container_name: gestao-durabilidade-db
+    tty: true
+    environment:
+      - POSTGRES_DB=gestao-durabilidade
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+    volumes:
+      - gestao-durabilidade-pgdata:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: gestao-durabilidade-pgadmin
+    tty: true
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@user.com
+      - PGADMIN_DEFAULT_PASSWORD=123456
+    ports:
+      - "9001:80"
+
+volumes:
+  gestao-durabilidade-pgdata:
+    external: true
